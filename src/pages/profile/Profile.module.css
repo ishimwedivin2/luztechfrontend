@@ -1,0 +1,220 @@
+.profilePage {
+    padding: 2rem 0 5rem;
+}
+
+.pageTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--secondary);
+    margin-bottom: 2rem;
+}
+
+.profileLayout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .profileLayout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sidebar */
+.sidebar {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.avatarSection {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--secondary), #1e3a5f);
+    color: white;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0 auto 1rem;
+    position: relative;
+}
+
+.avatarEdit {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    color: var(--secondary);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.avatarSection h3 {
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.avatarSection p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+}
+
+.roleBadge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.profileNav {
+    display: flex;
+    flex-direction: column;
+}
+
+.profileNav button {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border: none;
+    background: none;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.profileNav button:hover {
+    background: #f9fafb;
+    color: var(--primary);
+}
+
+.navActive {
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+    border-left: 3px solid var(--primary) !important;
+    background: var(--primary-soft) !important;
+}
+
+/* Main Content */
+.successAlert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ecfdf5;
+    color: #059669;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.card {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid #e5e7eb;
+    padding: 2rem;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.cardHeader h2 {
+    font-size: 1.25rem;
+    color: var(--secondary);
+}
+
+.editBtn {
+    background: none;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.editBtn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+@media (max-width: 600px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.formGroup label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.formGroup input {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.formGroup input:focus {
+    border-color: var(--primary);
+}
+
+.disabledField {
+    background: #f9fafb !important;
+    color: var(--text-light) !important;
+}
+
+.cardActions {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f3f4f6;
+}

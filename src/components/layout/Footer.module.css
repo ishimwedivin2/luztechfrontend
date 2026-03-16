@@ -1,0 +1,123 @@
+.footer {
+    background-color: var(--secondary);
+    color: #e2e8f0;
+    padding: 5rem 0 2rem;
+    margin-top: 5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+}
+
+.logoText {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: white;
+}
+
+.logoSubtext {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.brandDesc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+}
+
+.socials {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.socials a {
+    color: #94a3b8;
+    transition: var(--transition);
+}
+
+.socials a:hover {
+    color: var(--primary);
+}
+
+.footer h4 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.footer ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer ul a,
+.footer ul li {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer ul a:hover {
+    color: white;
+    padding-left: 5px;
+}
+
+.bottomBar {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.paymentMethods {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.divider {
+    width: 1px;
+    height: 12px;
+    background-color: #334155;
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .bottomBar {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+}
