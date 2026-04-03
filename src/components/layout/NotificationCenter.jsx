@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Package, HelpCircle, Info, CheckCircle2, XCircle } from 'lucide-react';
+import { Bell, Package, HelpCircle, Info, CheckCircle2, ChevronRight, X } from 'lucide-react';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import styles from './NotificationCenter.module.css';
@@ -12,6 +14,7 @@ const NotificationCenter = () => {
     const { user } = useAuth();
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
+    const stompClientRef = useRef(null);
 
     const fetchNotifications = async () => {
         if (!user) return;
@@ -26,10 +29,41 @@ const NotificationCenter = () => {
     };
 
     useEffect(() => {
+        if (!user) return;
+
+        // Fetch initial set of notifications
         fetchNotifications();
-        // Set up interval for polling (could also use WebSocket here)
-        const interval = setInterval(fetchNotifications, 60000);
-        return () => clearInterval(interval);
+
+        // WebSocket setup with STOMP and SockJS
+        const socket = new SockJS('http://localhost:8080/ws');
+        const client = new Client({
+            webSocketFactory: () => socket,
+            reconnectDelay: 5000,
+            onConnect: () => {
+                console.log('Connected to WebSocket');
+                
+                // Subscribe to user-specific notifications
+                client.subscribe('/user/topic/notifications', (message) => {
+                    const newNotification = JSON.parse(message.body);
+                    setNotifications(prev => [newNotification, ...prev]);
+                    setUnreadCount(prev => prev + 1);
+                    
+                    // Show a browser notification or toast here if desired
+                });
+            },
+            onStompError: (frame) => {
+                console.error('STOMP error', frame);
+            }
+        });
+
+        client.activate();
+        stompClientRef.current = client;
+
+        return () => {
+            if (stompClientRef.current) {
+                stompClientRef.current.deactivate();
+            }
+        };
     }, [user]);
 
     // Handle clicks outside dropdown
@@ -66,6 +100,7 @@ const NotificationCenter = () => {
         // Redirect based on type
         if (item.type === 'ORDER') navigate(`/orders/${item.relatedId}`);
         else if (item.type === 'SUPPORT') navigate(`/support/tickets/${item.relatedId}`);
+        else if (item.relatedId) navigate(item.relatedId); // Fallback to raw link
     };
 
     const getIcon = (type) => {
@@ -81,20 +116,30 @@ const NotificationCenter = () => {
 
     return (
         <div className={styles.notificationCenter} ref={dropdownRef}>
-            <button className={styles.notificationBtn} onClick={() => setIsOpen(!isOpen)}>
+            <button 
+                className={`${styles.notificationBtn} ${isOpen ? styles.active : ''}`} 
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label="Notifications"
+            >
                 <Bell size={24} />
-                {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}
+                {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 99 ? '99+' : unreadCount}</span>}
             </button>
 
             {isOpen && (
                 <div className={styles.dropdown}>
                     <div className={styles.header}>
-                        <h3>Notifications</h3>
-                        {unreadCount > 0 && (
-                            <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
-                                Mark all as read
-                            </button>
-                        )}
+                        <div className={styles.headerTop}>
+                            <h3>Latest Notifications</h3>
+                            <button className={styles.closeBtn} onClick={() => setIsOpen(false)}><X size={18} /></button>
+                        </div>
+                        <div className={styles.headerBottom}>
+                            <span className={styles.countText}>{unreadCount} unread message{unreadCount !== 1 ? 's' : ''}</span>
+                            {unreadCount > 0 && (
+                                <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
+                                    Mark all as read
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className={styles.notificationList}>
@@ -105,25 +150,38 @@ const NotificationCenter = () => {
                                     className={`${styles.notificationItem} ${!item.read ? styles.unread : ''}`}
                                     onClick={() => handleNotificationClick(item)}
                                 >
-                                    <div className={styles.iconWrapper}>
+                                    <div className={`${styles.iconWrapper} ${styles[item.type?.toLowerCase() || 'default']}`}>
                                         {getIcon(item.type)}
                                     </div>
                                     <div className={styles.content}>
-                                        <div className={styles.title}>{item.title}</div>
+                                        <div className={styles.titleRow}>
+                                            <span className={styles.title}>{item.title}</span>
+                                            <span className={styles.time}>{formatTime(item.createdAt)}</span>
+                                        </div>
                                         <div className={styles.message}>{item.message}</div>
-                                        <div className={styles.time}>
-                                            {formatTime(item.createdAt)}
+                                        <div className={styles.actionPrompt}>
+                                            View details <ChevronRight size={12} />
                                         </div>
                                     </div>
+                                    {!item.read && <div className={styles.unreadDot} />}
                                 </div>
                             ))
                         ) : (
                             <div className={styles.emptyState}>
-                                <Bell size={48} opacity={0.2} />
-                                <p>No notifications yet</p>
+                                <div className={styles.emptyIcon}><Bell size={48} /></div>
+                                <p>You're all caught up!</p>
+                                <span>When you receive notifications, they'll appear here.</span>
                             </div>
                         )}
                     </div>
+
+                    {notifications.length > 0 && (
+                        <div className={styles.footer}>
+                            <button onClick={() => { navigate('/profile?tab=notifications'); setIsOpen(false); }}>
+                                View all notifications
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
@@ -131,17 +189,22 @@ const NotificationCenter = () => {
 };
 
 const formatTime = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     const now = new Date();
     const diff = now - date;
-    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (minutes < 1) return 'Just now';
+    if (seconds < 30) return 'Just now';
+    if (seconds < 60) return `${seconds}s ago`;
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
-    return `${days}d ago`;
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString();
 };
 
 export default NotificationCenter;
+

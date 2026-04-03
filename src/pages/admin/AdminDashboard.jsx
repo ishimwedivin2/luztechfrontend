@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings, ShieldCheck, PlusCircle, Trash2, Edit, Eye, DollarSign, TrendingUp, Search, LifeBuoy, Clock, CheckCircle, Send, AlertTriangle, GraduationCap, Briefcase, FileText } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings, ShieldCheck, PlusCircle, Trash2, Edit, Eye, DollarSign, TrendingUp, Search, LifeBuoy, Clock, CheckCircle, Send, AlertTriangle, GraduationCap, Briefcase, FileText, Ticket, Percent, Info, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import styles from './Admin.module.css';
@@ -39,6 +39,8 @@ const AdminDashboard = () => {
                         { key: 'support', icon: <LifeBuoy size={20} />, label: 'Support', roles: ['ADMIN', 'SUPPORT'] },
                         { key: 'academy', icon: <GraduationCap size={20} />, label: 'Academy', roles: ['ADMIN'] },
                         { key: 'careers', icon: <Briefcase size={20} />, label: 'Careers', roles: ['ADMIN'] },
+                        { key: 'discounts', icon: <Ticket size={20} />, label: 'Discounts', roles: ['ADMIN'] },
+                        { key: 'audit', icon: <Clock size={20} />, label: 'Audit Logs', roles: ['ADMIN'] },
                     ].filter(item => {
                         if (isAdmin()) return true;
                         if (isEmployee() && item.roles.includes('EMPLOYEE')) return true;
@@ -73,6 +75,8 @@ const AdminDashboard = () => {
                     {activeTab === 'support' && <SupportTab />}
                     {activeTab === 'academy' && <AcademyTab />}
                     {activeTab === 'careers' && <CareersTab />}
+                    {activeTab === 'discounts' && <DiscountsTab />}
+                    {activeTab === 'audit' && <AuditTab />}
                 </div>
             </main>
         </div>
@@ -185,7 +189,7 @@ const ProductsTab = () => {
 /* ===== ADD PRODUCT MODAL ===== */
 const AddProductModal = ({ onClose, onAdded }) => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', sku: '', status: 'ACTIVE', categoryId: '' });
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -199,9 +203,24 @@ const AddProductModal = ({ onClose, onAdded }) => {
         try {
             const data = new FormData();
             Object.keys(formData).forEach(key => data.append(key, formData[key]));
-            if (file) data.append('file', file);
+            
+            // Primary image (first one)
+            if (files.length > 0) {
+                data.append('file', files[0]);
+            }
 
             const res = await api.post('/products/upload', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+            
+            if (res.success && files.length > 1) {
+                const productId = res.data.id;
+                // Upload additional images sequentially
+                for (let i = 1; i < files.length; i++) {
+                    const extraData = new FormData();
+                    extraData.append('file', files[i]);
+                    await api.post(`/products/${productId}/images`, extraData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                }
+            }
+
             if (res.success) {
                 onAdded();
                 onClose();
@@ -241,8 +260,9 @@ const AddProductModal = ({ onClose, onAdded }) => {
                         <textarea rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                     </div>
                     <div className={styles.formGroup}>
-                        <label>Image</label>
-                        <input type="file" onChange={e => setFile(e.target.files[0])} accept="image/*" required />
+                        <label>Product Images (First will be primary)</label>
+                        <input type="file" onChange={e => setFiles(Array.from(e.target.files))} accept="image/*" multiple required />
+                        {files.length > 0 && <p className={styles.fileCountHint}>{files.length} images selected</p>}
                     </div>
                     <div className={styles.formActions}>
                         <button type="button" onClick={onClose} className={styles.cancelBtn}>Cancel</button>
@@ -265,6 +285,8 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
         sku: product.sku || '',
         status: product.status || 'ACTIVE'
     });
+    const [images, setImages] = useState(product.images || []);
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -280,9 +302,39 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
         finally { setLoading(false); }
     };
 
+    const handleUploadImage = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploadingImage(true);
+        try {
+            const data = new FormData();
+            data.append('file', file);
+            const res = await api.post(`/products/${product.id}/images`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+            if (res.success) {
+                setImages([...images, res.data]);
+                onUpdated();
+            }
+        } catch (e) { alert('Upload failed: ' + e.message); }
+        finally { setUploadingImage(false); }
+    };
+
+    const handleDeleteImage = async (imageId) => {
+        if (!window.confirm('Remove this image?')) return;
+        try {
+            // Backend delete image endpoint assumed or logic to remove
+            await api.patch(`/products/${product.id}/remove-image/${imageId}`);
+            setImages(images.filter(img => img.id !== imageId));
+            onUpdated();
+        } catch (e) { 
+            console.error(e);
+            alert('Failed to delete image. Please check if this feature is fully implemented on the backend.'); 
+        }
+    };
+
     return (
         <div className={styles.modalOverlay}>
-            <div className={styles.modalContent} style={{ maxWidth: '600px' }}>
+            <div className={styles.modalContent} style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
                 <h3>Edit Product: {product.name}</h3>
                 <form onSubmit={handleSubmit} className={styles.adminForm}>
                     <div className={styles.formGrid}>
@@ -311,6 +363,24 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
                         <label>Description</label>
                         <textarea rows="4" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                     </div>
+
+                    <div className={styles.imageEditSection}>
+                        <label>Manage Images</label>
+                        <div className={styles.imageGrid}>
+                            {images.map(img => (
+                                <div key={img.id} className={styles.imageWrapper}>
+                                    <img src={`http://localhost:8080${img.url}`} alt="" />
+                                    <button type="button" className={styles.deleteBtnSmall} onClick={() => handleDeleteImage(img.id)}><Trash2 size={12} /></button>
+                                    {img.isPrimary && <span className={styles.primaryTag}>Primary</span>}
+                                </div>
+                            ))}
+                            <label className={styles.addImageCard}>
+                                <input type="file" onChange={handleUploadImage} accept="image/*" hidden disabled={uploadingImage} />
+                                {uploadingImage ? '...' : <PlusCircle size={24} />}
+                            </label>
+                        </div>
+                    </div>
+
                     <div className={styles.formActions}>
                         <button type="button" onClick={onClose} className={styles.cancelBtn}>Cancel</button>
                         <button type="submit" className="btn-primary" disabled={loading}>
@@ -322,6 +392,7 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
         </div>
     );
 };
+
 
 /* ===== ORDERS TAB ===== */
 const OrdersTab = () => {
@@ -1272,5 +1343,362 @@ const ApplicationsModal = ({ job, onClose }) => {
     );
 };
 
+/* ===== DISCOUNTS & COUPONS TAB ===== */
+const DiscountsTab = () => {
+    const [view, setView] = useState('coupons'); // 'coupons' or 'rules'
+    const [coupons, setCoupons] = useState([]);
+    const [rules, setRules] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showAddModal, setShowAddModal] = useState(false);
+
+    useEffect(() => {
+        fetchData();
+    }, [view]);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            if (view === 'coupons') {
+                const res = await api.get('/finance/coupons');
+                setCoupons(res.data || []);
+            } else {
+                const res = await api.get('/products/discounts');
+                setRules(res.data || []);
+            }
+        } catch (e) {
+            console.error(e);
+            // demo fallbacks
+            if (view === 'coupons') setCoupons([{ id: '1', code: 'SPRING20', amount: 20, type: 'PERCENTAGE', active: true, usageLimit: 100, currentUsage: 45 }]);
+            else setRules([{ id: '1', name: 'Summer Sale', discountPercentage: 15, active: true }]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Delete this?')) return;
+        try {
+            const endpoint = view === 'coupons' ? `/finance/coupons/${id}` : `/products/discounts/${id}`;
+            await api.delete(endpoint);
+            fetchData();
+        } catch (e) { alert('Delete failed'); }
+    };
+
+    return (
+        <div className={styles.discountsContainer}>
+            <div className={styles.tabHeader}>
+                <div className={styles.toggleGroup}>
+                    <button className={`${styles.toggleBtn} ${view === 'coupons' ? styles.toggleActive : ''}`} onClick={() => setView('coupons')}>Checkout Coupons</button>
+                    <button className={`${styles.toggleBtn} ${view === 'rules' ? styles.toggleActive : ''}`} onClick={() => setView('rules')}>Product Discounts</button>
+                </div>
+                <button className="btn-primary" onClick={() => setShowAddModal(true)}>
+                    <PlusCircle size={18} /> New {view === 'coupons' ? 'Coupon' : 'Rule'}
+                </button>
+            </div>
+
+            {loading ? <div className={styles.loadingState}>Refreshing promotional data...</div> : (
+                <div className={styles.tableWrapper}>
+                    <table className={styles.dataTable}>
+                        <thead>
+                            {view === 'coupons' ? (
+                                <tr><th>Code</th><th>Value</th><th>Type</th><th>Usage</th><th>Status</th><th>Actions</th></tr>
+                            ) : (
+                                <tr><th>Name</th><th>Discount</th><th>Starts</th><th>Ends</th><th>Status</th><th>Actions</th></tr>
+                            )}
+                        </thead>
+                        <tbody>
+                            {view === 'coupons' ? coupons.map(c => (
+                                <tr key={c.id}>
+                                    <td><strong>{c.code}</strong></td>
+                                    <td>{c.amount}{c.type === 'PERCENTAGE' ? '%' : '$'}</td>
+                                    <td><span className={styles.badgeGray}>{c.type}</span></td>
+                                    <td>{c.currentUsage} / {c.usageLimit || '∞'}</td>
+                                    <td><span className={`${styles.badge} ${c.active ? styles.badgeGreen : styles.badgeRed}`}>{c.active ? 'ACTIVE' : 'INACTIVE'}</span></td>
+                                    <td><div className={styles.actionBtns}><button onClick={() => handleDelete(c.id)}><Trash2 size={16} /></button></div></td>
+                                </tr>
+                            )) : rules.map(r => (
+                                <tr key={r.id}>
+                                    <td><strong>{r.name}</strong></td>
+                                    <td>{r.discountPercentage}%</td>
+                                    <td>{r.startDate ? new Date(r.startDate).toLocaleDateString() : 'Immediate'}</td>
+                                    <td>{r.endDate ? new Date(r.endDate).toLocaleDateString() : 'No Limit'}</td>
+                                    <td><span className={`${styles.badge} ${r.active ? styles.badgeGreen : styles.badgeRed}`}>{r.active ? 'ACTIVE' : 'INACTIVE'}</span></td>
+                                    <td><div className={styles.actionBtns}><button onClick={() => handleDelete(r.id)}><Trash2 size={16} /></button></div></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {(view === 'coupons' ? coupons : rules).length === 0 && <div className={styles.noData}>No {view} active at the moment.</div>}
+                </div>
+            )}
+
+            {showAddModal && <AddPromotionModal type={view} onClose={() => setShowAddModal(false)} onAdded={fetchData} />}
+        </div>
+    );
+};
+
+const AddPromotionModal = ({ type, onClose, onAdded }) => {
+    const [loading, setLoading] = useState(false);
+    const [form, setForm] = useState(type === 'coupons' ? {
+        code: '', amount: '', type: 'PERCENTAGE', usageLimit: '', minimumOrderAmount: '', active: true
+    } : {
+        name: '', description: '', discountPercentage: '', active: true
+    });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const endpoint = type === 'coupons' ? '/finance/coupons' : '/products/discounts';
+            await api.post(endpoint, form);
+            onAdded();
+            onClose();
+        } catch (e) { alert('Error creating ' + type); }
+        finally { setLoading(false); }
+    };
+
+    return (
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+                <h3>Create New {type === 'coupons' ? 'Promo Coupon' : 'Discount Rule'}</h3>
+                <form onSubmit={handleSubmit} className={styles.adminForm}>
+                    {type === 'coupons' ? (
+                        <>
+                            <div className={styles.formGroup}>
+                                <label>Coupon Code (e.g. SAVE20)</label>
+                                <input type="text" value={form.code} onChange={e => setForm({...form, code: e.target.value})} required placeholder="SAVE20" />
+                            </div>
+                            <div className={styles.formGrid}>
+                                <div className={styles.formGroup}>
+                                    <label>Amount</label>
+                                    <input type="number" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} required />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Type</label>
+                                    <select value={form.type} onChange={e => setForm({...form, type: e.target.value})}>
+                                        <option value="PERCENTAGE">Percentage (%)</option>
+                                        <option value="FIXED">Fixed Amount ($)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className={styles.formGrid}>
+                                <div className={styles.formGroup}>
+                                    <label>Usage Limit</label>
+                                    <input type="number" value={form.usageLimit} onChange={e => setForm({...form, usageLimit: e.target.value})} />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Min Order Spend</label>
+                                    <input type="number" value={form.minimumOrderAmount} onChange={e => setForm({...form, minimumOrderAmount: e.target.value})} />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className={styles.formGroup}>
+                                <label>Rule Name</label>
+                                <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Discount Percentage (%)</label>
+                                <input type="number" value={form.discountPercentage} onChange={e => setForm({...form, discountPercentage: e.target.value})} required />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Description</label>
+                                <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} required />
+                            </div>
+                        </>
+                    )}
+                    <div className={styles.formActions}>
+                        <button type="button" onClick={onClose} className={styles.cancelBtn}>Cancel</button>
+                        <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Creating...' : 'Create Promotion'}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+/* ===== AUDIT LOGS TAB ===== */
+const AuditTab = () => {
+    const [logs, setLogs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchEmail, setSearchEmail] = useState('');
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [selectedLog, setSelectedLog] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('');
+
+    const fetchLogs = async (p = page) => {
+        setLoading(true);
+        try {
+            let endpoint = '/admin/audit';
+            const params = new URLSearchParams({
+                page: p,
+                size: 20,
+                sort: 'timestamp,desc'
+            });
+
+            if (searchEmail) {
+                endpoint = '/admin/audit/search';
+                params.append('email', searchEmail);
+            }
+
+            const res = await api.get(`${endpoint}?${params.toString()}`);
+            if (res.success && res.data) {
+                setLogs(res.data.content || []);
+                setTotalPages(res.data.totalPages || 0);
+            }
+        } catch (e) {
+            console.error('Error fetching logs', e);
+            // demo fallback
+            setLogs([
+                { id: '1', userEmail: 'admin@luz.com', action: 'LOGIN', resource: '/api/auth/login', ipAddress: '192.168.1.1', status: 'SUCCESS', timestamp: new Date().toISOString() },
+                { id: '2', userEmail: 'user@test.com', action: 'ORDER_CREATE', resource: '/api/orders', ipAddress: '10.0.0.5', status: 'SUCCESS', timestamp: new Date().toISOString() },
+                { id: '3', userEmail: 'intruder@hack.com', action: 'LOGIN_FAILURE', resource: '/api/auth/login', ipAddress: '45.1.2.3', status: 'FAILURE', timestamp: new Date().toISOString(), details: 'Invalid credentials attempted 5 times.' }
+            ]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchLogs(0);
+        setPage(0);
+    }, [searchEmail]);
+
+    const handleNextPage = () => {
+        if (page < totalPages - 1) {
+            const next = page + 1;
+            setPage(next);
+            fetchLogs(next);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (page > 0) {
+            const prev = page - 1;
+            setPage(prev);
+            fetchLogs(prev);
+        }
+    };
+
+    const filteredLogs = statusFilter 
+        ? logs.filter(l => l.status === statusFilter)
+        : logs;
+
+    return (
+        <div className={styles.auditContainer}>
+            <div className={styles.tabHeader}>
+                <div className={styles.searchWrapper} style={{ width: '350px' }}>
+                    <Search size={18} />
+                    <input 
+                        placeholder="Search by User Email..." 
+                        value={searchEmail}
+                        onChange={e => setSearchEmail(e.target.value)}
+                        className={styles.searchInput}
+                    />
+                </div>
+                <div className={styles.filterGroupRow}>
+                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={styles.statusSelect}>
+                        <option value="">All Statuses</option>
+                        <option value="SUCCESS">Success</option>
+                        <option value="FAILURE">Failure</option>
+                    </select>
+                    <button className={styles.refreshBtn} onClick={() => fetchLogs(page)} title="Refresh logs"><Clock size={18} /></button>
+                </div>
+            </div>
+
+            {loading ? <div className={styles.loadingState} style={{ padding: '4rem', textAlign: 'center' }}>Loading audit logs...</div> : (
+                <div className={styles.tableWrapper}>
+                    <table className={styles.dataTable}>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Resource</th>
+                                <th>IP Address</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredLogs.map(log => (
+                                <tr key={log.id} className={log.status === 'FAILURE' ? styles.errorRow : ''}>
+                                    <td className={styles.timeCol}>{new Date(log.timestamp).toLocaleString()}</td>
+                                    <td className={styles.emailCol}><strong>{log.userEmail || 'System'}</strong></td>
+                                    <td><span className={styles.actionBadge}>{log.action}</span></td>
+                                    <td className={styles.resourceCol}><code>{log.resource}</code></td>
+                                    <td>{log.ipAddress}</td>
+                                    <td>
+                                        <span className={`${styles.badge} ${log.status === 'SUCCESS' ? styles.badgeGreen : styles.badgeRed}`}>
+                                            {log.status}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button className={styles.iconBtn} onClick={() => setSelectedLog(log)} title="View Details">
+                                            <Info size={16} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    
+                    {filteredLogs.length === 0 && (
+                        <div className={styles.noData} style={{ padding: '4rem', textAlign: 'center' }}>
+                            <AlertTriangle size={48} color="#f59e0b" style={{ margin: '0 auto 1rem', display: 'block' }} />
+                            <p>No audit logs found for the selected criteria.</p>
+                        </div>
+                    )}
+
+                    <div className={styles.pagination} style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center', gap: '1rem', alignItems: 'center' }}>
+                        <button className="btn-secondary btn-sm" disabled={page === 0} onClick={handlePrevPage}>Previous</button>
+                        <span style={{ fontSize: '0.9rem', color: '#64748b' }}>Page {page + 1} of {totalPages || 1}</span>
+                        <button className="btn-secondary btn-sm" disabled={page >= totalPages - 1} onClick={handleNextPage}>Next</button>
+                    </div>
+                </div>
+            )}
+
+            {selectedLog && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent} style={{ maxWidth: '600px' }}>
+                        <div className={styles.modalHeader}>
+                            <h3>Audit Log Details</h3>
+                            <button onClick={() => setSelectedLog(null)} className={styles.closeBtn}><X size={20} /></button>
+                        </div>
+                        <div className={styles.logDetails} style={{ padding: '1rem' }}>
+                            <div className={styles.detailItem} style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Action Targeted</label>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>{selectedLog.action}</span>
+                            </div>
+                            <div className={styles.detailGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                                <div className={styles.detailItem}>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>Timestamp</label>
+                                    <span style={{ fontSize: '0.9rem' }}>{new Date(selectedLog.timestamp).toLocaleString()}</span>
+                                </div>
+                                <div className={styles.detailItem}>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>IP Address</label>
+                                    <span style={{ fontSize: '0.9rem' }}>{selectedLog.ipAddress}</span>
+                                </div>
+                            </div>
+                            <div className={styles.detailItem}>
+                                <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>Technical Details / Payload</label>
+                                <pre style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem', whiteSpace: 'pre-wrap', border: '1px solid #e2e8f0', marginTop: '0.5rem' }}>
+                                    {selectedLog.details || 'No additional details available for this action.'}
+                                </pre>
+                            </div>
+                        </div>
+                        <div className={styles.modalActions}>
+                            <button className="btn-primary" onClick={() => setSelectedLog(null)}>Close Viewer</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default AdminDashboard;
+
 

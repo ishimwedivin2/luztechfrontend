@@ -6,8 +6,13 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState(() => {
-        const saved = localStorage.getItem('luz_cart');
-        return saved ? JSON.parse(saved) : [];
+        try {
+            const saved = localStorage.getItem('luz_cart');
+            return (saved && saved !== "undefined") ? JSON.parse(saved) : [];
+        } catch (e) {
+            console.error("Error parsing cart from localStorage", e);
+            return [];
+        }
     });
 
     // Persist cart to localStorage

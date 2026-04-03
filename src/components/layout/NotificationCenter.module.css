@@ -5,31 +5,31 @@
 .notificationBtn {
     background: none;
     border: none;
-    color: var(--text-muted);
+    color: #4b5563;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
-.notificationBtn:hover {
+.notificationBtn:hover, .notificationBtn.active {
     background: #f3f4f6;
-    color: var(--primary);
+    color: #2563eb;
 }
 
 .badge {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 6px;
+    right: 6px;
     background: #ef4444;
     color: white;
-    font-size: 0.7rem;
-    font-weight: 700;
+    font-size: 0.65rem;
+    font-weight: 800;
     min-width: 18px;
     height: 18px;
     border-radius: 9px;
@@ -37,125 +37,258 @@
     align-items: center;
     justify-content: center;
     border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
 .dropdown {
     position: absolute;
-    top: 50px;
-    right: 0;
-    width: 350px;
+    top: calc(100% + 12px);
+    right: -10px;
+    width: 380px;
     background: white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+    border-radius: 16px;
     z-index: 1000;
     overflow: hidden;
-    animation: slideDown 0.3s ease-out;
+    animation: dropdownEntrance 0.2s ease-out;
 }
 
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes dropdownEntrance {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .header {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f3f4f6;
+    padding: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.headerTop {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f9fafb;
+    margin-bottom: 0.75rem;
 }
 
-.header h3 {
+.headerTop h3 {
     margin: 0;
-    font-size: 1rem;
-    color: #111827;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.closeBtn:hover {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.headerBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.countText {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 .markAllBtn {
-    font-size: 0.8rem;
-    color: var(--primary);
+    font-size: 0.85rem;
+    color: #2563eb;
     background: none;
     border: none;
     cursor: pointer;
     font-weight: 600;
+    padding: 0;
+}
+
+.markAllBtn:hover {
+    text-decoration: underline;
 }
 
 .notificationList {
-    max-height: 400px;
+    max-height: 420px;
     overflow-y: auto;
 }
 
+.notificationList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notificationList::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 3px;
+}
+
 .notificationItem {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid #f3f4f6;
+    padding: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     display: flex;
     gap: 1rem;
+    position: relative;
 }
 
 .notificationItem:hover {
-    background: #f9fafb;
+    background: #f8fafc;
 }
 
 .unread {
-    background: #f0f9ff;
-    border-left: 3px solid var(--primary);
+    background: #f0f7ff;
+}
+
+.unread:hover {
+    background: #e6f1ff;
 }
 
 .iconWrapper {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
     flex-shrink: 0;
+    background: #f1f5f9;
 }
+
+.iconWrapper.order { background: #eff6ff; }
+.iconWrapper.support { background: #fffbeb; }
+.iconWrapper.system { background: #f8fafc; }
 
 .content {
     flex: 1;
+    min-width: 0;
+}
+
+.titleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.25rem;
+    gap: 0.5rem;
 }
 
 .title {
     font-weight: 700;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
-    color: #111827;
-}
-
-.message {
-    font-size: 0.85rem;
-    color: #4b5563;
-    line-height: 1.4;
-    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .time {
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+.message {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.actionPrompt {
+    font-size: 0.8rem;
+    color: #2563eb;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.unreadDot {
+    width: 8px;
+    height: 8px;
+    background: #3b82f6;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    right: 1.25rem;
+    transform: translateY(-50%);
+}
+
+.footer {
+    padding: 1rem;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    text-align: center;
+}
+
+.footer button {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.footer button:hover {
+    color: #1e293b;
+    background: #f1f5f9;
 }
 
 .emptyState {
-    padding: 3rem 2rem;
+    padding: 4rem 2rem;
     text-align: center;
-    color: #9ca3af;
+}
+
+.emptyIcon {
+    width: 64px;
+    height: 64px;
+    background: #f1f5f9;
+    color: #94a3b8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
 }
 
 .emptyState p {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
-@media (max-width: 480px) {
+.emptyState span {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+@media (max-width: 640px) {
     .dropdown {
         position: fixed;
-        top: 60px;
+        top: 64px;
         left: 10px;
         right: 10px;
-        width: calc(100% - 20px);
+        width: auto;
+        max-height: calc(100vh - 80px);
     }
 }
+
