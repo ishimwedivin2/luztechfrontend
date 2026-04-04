@@ -1,22 +1,22 @@
 .footer {
     background-color: var(--secondary);
     color: #e2e8f0;
-    padding: 5rem 0 2rem;
-    margin-top: 5rem;
+    padding: 1.5rem 0 1rem;
+    margin-top: 1.5rem;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    gap: 4rem;
-    margin-bottom: 4rem;
+    grid-template-columns: 1.8fr 0.8fr 0.8fr 1.2fr 1.6fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .logo {
     display: flex;
     flex-direction: column;
     line-height: 1;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .logoText {
@@ -33,10 +33,10 @@
 }
 
 .brandDesc {
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.4;
     color: #94a3b8;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .socials {
@@ -55,7 +55,7 @@
 
 .footer h4 {
     color: white;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     font-size: 1.1rem;
     font-weight: 700;
 }
@@ -80,8 +80,20 @@
     padding-left: 5px;
 }
 
+.mapWrapper {
+    width: 100%;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    filter: saturate(0) opacity(0.8) contrast(1.2);
+    transition: var(--transition);
+}
+
+.mapWrapper:hover {
+    filter: saturate(1) opacity(1);
+}
+
 .bottomBar {
-    padding-top: 2rem;
+    padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-between;
@@ -102,17 +114,24 @@
     background-color: #334155;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
     .grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+        grid-template-columns: 1.5fr 1fr 1fr;
+        gap: 2rem;
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 500px) {
     .grid {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        gap: 1.75rem;
     }
 
     .bottomBar {
