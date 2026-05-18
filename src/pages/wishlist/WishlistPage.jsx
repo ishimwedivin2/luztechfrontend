@@ -76,14 +76,14 @@ const WishlistPage = () => {
                             
                             <div className={styles.imageWrapper} onClick={() => navigate(`/product/${item.product.id}`)}>
                                 {item.product.images?.[0] ? (
-                                    <img src={`http://localhost:8080${item.product.images[0].url}`} alt={item.product.name} />
+                                    <img src={`http://localhost:8080${item.product.images[0].url ? item.product.images[0].url : item.product.images[0]}`} alt={item.product.name} />
                                 ) : (
                                     <Package size={48} opacity={0.2} />
                                 )}
                             </div>
 
                             <div className={styles.productInfo}>
-                                <span className={styles.category}>{item.product.category?.name || 'Category'}</span>
+                                <span className={styles.category}>{item.product.categoryName || 'Category'}</span>
                                 <h3>{item.product.name}</h3>
                                 
                                 <div className={styles.priceRow}>

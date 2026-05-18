@@ -127,21 +127,21 @@ const CheckoutPage = () => {
                             <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
                                     <label>Full Name</label>
-                                    <input type="text" value={shippingData.fullName} onChange={e => setShippingData({ ...shippingData, fullName: e.target.value })} required />
+                                    <input id="shipping-full-name" name="fullName" type="text" value={shippingData.fullName} onChange={e => setShippingData({ ...shippingData, fullName: e.target.value })} required />
                                 </div>
                                 <div className={styles.formGroup}>
                                     <label>Email</label>
-                                    <input type="email" value={shippingData.email} onChange={e => setShippingData({ ...shippingData, email: e.target.value })} required />
+                                    <input id="shipping-email" name="email" type="email" value={shippingData.email} onChange={e => setShippingData({ ...shippingData, email: e.target.value })} required />
                                 </div>
                             </div>
                             <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
                                     <label>Phone Number</label>
-                                    <input type="tel" placeholder="+250..." value={shippingData.phone} onChange={e => setShippingData({ ...shippingData, phone: e.target.value })} required />
+                                    <input id="shipping-phone" name="phone" type="tel" placeholder="+250..." value={shippingData.phone} onChange={e => setShippingData({ ...shippingData, phone: e.target.value })} required />
                                 </div>
                                 <div className={styles.formGroup}>
                                     <label>Country</label>
-                                    <select value={shippingData.country} onChange={e => setShippingData({ ...shippingData, country: e.target.value })}>
+                                    <select id="shipping-country" name="country" value={shippingData.country} onChange={e => setShippingData({ ...shippingData, country: e.target.value })}>
                                         <option>Rwanda</option>
                                         <option>Kenya</option>
                                         <option>Uganda</option>
@@ -153,20 +153,20 @@ const CheckoutPage = () => {
                             </div>
                             <div className={styles.formGroup}>
                                 <label>Street Address</label>
-                                <input type="text" placeholder="123 Main Street" value={shippingData.address} onChange={e => setShippingData({ ...shippingData, address: e.target.value })} required />
+                                <input id="shipping-address" name="address" type="text" placeholder="123 Main Street" value={shippingData.address} onChange={e => setShippingData({ ...shippingData, address: e.target.value })} required />
                             </div>
                             <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
                                     <label>City</label>
-                                    <input type="text" placeholder="Kigali" value={shippingData.city} onChange={e => setShippingData({ ...shippingData, city: e.target.value })} required />
+                                    <input id="shipping-city" name="city" type="text" placeholder="Kigali" value={shippingData.city} onChange={e => setShippingData({ ...shippingData, city: e.target.value })} required />
                                 </div>
                                 <div className={styles.formGroup}>
                                     <label>State/Province</label>
-                                    <input type="text" value={shippingData.state} onChange={e => setShippingData({ ...shippingData, state: e.target.value })} />
+                                    <input id="shipping-state" name="state" type="text" value={shippingData.state} onChange={e => setShippingData({ ...shippingData, state: e.target.value })} />
                                 </div>
                                 <div className={styles.formGroup}>
                                     <label>Zip Code</label>
-                                    <input type="text" value={shippingData.zipCode} onChange={e => setShippingData({ ...shippingData, zipCode: e.target.value })} />
+                                    <input id="shipping-zip" name="zipCode" type="text" value={shippingData.zipCode} onChange={e => setShippingData({ ...shippingData, zipCode: e.target.value })} />
                                 </div>
                             </div>
                             <div className={styles.formActions}>
@@ -199,20 +199,20 @@ const CheckoutPage = () => {
                                 <div className={styles.cardFields}>
                                     <div className={styles.formGroup}>
                                         <label>Cardholder Name</label>
-                                        <input type="text" placeholder="John Doe" value={paymentData.cardName} onChange={e => setPaymentData({ ...paymentData, cardName: e.target.value })} required />
+                                        <input id="cardholder-name" name="cardName" type="text" placeholder="John Doe" value={paymentData.cardName} onChange={e => setPaymentData({ ...paymentData, cardName: e.target.value })} required />
                                     </div>
                                     <div className={styles.formGroup}>
                                         <label>Card Number</label>
-                                        <input type="text" placeholder="4242 4242 4242 4242" maxLength="19" value={paymentData.cardNumber} onChange={e => setPaymentData({ ...paymentData, cardNumber: e.target.value })} required />
+                                        <input id="card-number" name="cardNumber" type="text" placeholder="4242 4242 4242 4242" maxLength="19" value={paymentData.cardNumber} onChange={e => setPaymentData({ ...paymentData, cardNumber: e.target.value })} required />
                                     </div>
                                     <div className={styles.formRow}>
                                         <div className={styles.formGroup}>
                                             <label>Expiry Date</label>
-                                            <input type="text" placeholder="MM/YY" maxLength="5" value={paymentData.expiry} onChange={e => setPaymentData({ ...paymentData, expiry: e.target.value })} required />
+                                            <input id="card-expiry" name="expiry" type="text" placeholder="MM/YY" maxLength="5" value={paymentData.expiry} onChange={e => setPaymentData({ ...paymentData, expiry: e.target.value })} required />
                                         </div>
                                         <div className={styles.formGroup}>
                                             <label>CVV</label>
-                                            <input type="text" placeholder="123" maxLength="4" value={paymentData.cvv} onChange={e => setPaymentData({ ...paymentData, cvv: e.target.value })} required />
+                                            <input id="card-cvv" name="cvv" type="text" placeholder="123" maxLength="4" value={paymentData.cvv} onChange={e => setPaymentData({ ...paymentData, cvv: e.target.value })} required />
                                         </div>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@ const CheckoutPage = () => {
                                 <div className={styles.cardFields}>
                                     <div className={styles.formGroup}>
                                         <label>Mobile Money Number</label>
-                                        <input type="tel" placeholder="078..." required />
+                                        <input id="mobile-money-number" name="mobileMoneyNumber" type="tel" placeholder="078..." required />
                                     </div>
                                 </div>
                             )}

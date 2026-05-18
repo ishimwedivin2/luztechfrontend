@@ -80,10 +80,10 @@ const HomePage = () => {
                             <div key={product.id} className={styles.productCard} onClick={() => navigate(`/product/${product.id}`)}>
                                 <div className={styles.productImage}>
                                     {product.images?.[0] ? (
-                                        <img src={`http://localhost:8080${product.images[0].url}`} alt={product.name} />
-                                    ) : (
-                                        <div className={styles.imagePlaceholder}>No Image</div>
-                                    )}
+                                            <img src={`http://localhost:8080${product.images[0].url ? product.images[0].url : product.images[0]}`} alt={product.name} />
+                                        ) : (
+                                            <div className={styles.imagePlaceholder}>No Image</div>
+                                        )}
                                 </div>
                                 <div className={styles.productInfo}>
                                     <h3>{product.name}</h3>

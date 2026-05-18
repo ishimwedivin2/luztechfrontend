@@ -169,9 +169,18 @@ const ProductsTab = () => {
                         <tbody>
                             {filtered.map(p => (
                                 <tr key={p.id}>
-                                    <td><div className={styles.productCell}><div className={styles.thumbSmall}>{p.images?.[0] ? <img src={`http://localhost:8080${p.images[0].url}`} alt="" /> : '📦'}</div><span>{p.name}</span></div></td>
+                                    <td>
+                                        <div className={styles.productCell}>
+                                            <div className={styles.thumbSmall}>
+                                                {p.images?.[0] ? (
+                                                    <img src={`http://localhost:8080${p.images[0].url ? p.images[0].url : p.images[0]}`} alt="" />
+                                                ) : '📦'}
+                                            </div>
+                                            <span>{p.name}</span>
+                                        </div>
+                                    </td>
                                     <td>{p.sku}</td>
-                                    <td>{p.category?.name || '—'}</td>
+                                    <td>{p.categoryName || '—'}</td>
                                     <td className={styles.priceCol}>${p.price?.toFixed(2)}</td>
                                     <td><span className={`${styles.badge} ${p.status === 'ACTIVE' ? styles.badgeGreen : styles.badgeGray}`}>{p.status}</span></td>
                                     <td><div className={styles.actionBtns}><button title="View"><Eye size={16} /></button><button title="Edit" onClick={() => setEditingProduct(p)}><Edit size={16} /></button><button title="Delete" onClick={() => handleDelete(p.id)}><Trash2 size={16} /></button></div></td>
@@ -209,7 +218,7 @@ const AddProductModal = ({ onClose, onAdded }) => {
                 data.append('file', files[0]);
             }
 
-            const res = await api.post('/products/upload', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+            const res = await api.post('/products/upload', data);
             
             if (res.success && files.length > 1) {
                 const productId = res.data.id;
@@ -217,7 +226,7 @@ const AddProductModal = ({ onClose, onAdded }) => {
                 for (let i = 1; i < files.length; i++) {
                     const extraData = new FormData();
                     extraData.append('file', files[i]);
-                    await api.post(`/products/${productId}/images`, extraData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                    await api.post(`/products/${productId}/images`, extraData);
                 }
             }
 
@@ -225,7 +234,7 @@ const AddProductModal = ({ onClose, onAdded }) => {
                 onAdded();
                 onClose();
             }
-        } catch (e) { alert('Error: ' + e.message); }
+        } catch (e) { const msg = e.response?.data?.message || e.response?.data || e.message; alert('Error: ' + msg); console.error(e); }
         finally { setLoading(false); }
     };
 
@@ -237,19 +246,19 @@ const AddProductModal = ({ onClose, onAdded }) => {
                     <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
                             <label>Product Name</label>
-                            <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
+                            <input id="product-name" name="name" type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
                         </div>
                         <div className={styles.formGroup}>
                             <label>Price ($)</label>
-                            <input type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} required />
+                            <input id="product-price" name="price" type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} required />
                         </div>
                         <div className={styles.formGroup}>
                             <label>SKU</label>
-                            <input type="text" value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} required />
+                            <input id="product-sku" name="sku" type="text" value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} required />
                         </div>
                         <div className={styles.formGroup}>
                             <label>Category</label>
-                            <select value={formData.categoryId} onChange={e => setFormData({ ...formData, categoryId: e.target.value })} required>
+                            <select id="product-category" name="categoryId" value={formData.categoryId} onChange={e => setFormData({ ...formData, categoryId: e.target.value })} required>
                                 <option value="">Select Category</option>
                                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
@@ -257,11 +266,11 @@ const AddProductModal = ({ onClose, onAdded }) => {
                     </div>
                     <div className={styles.formGroup}>
                         <label>Description</label>
-                        <textarea rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
+                        <textarea id="product-description" name="description" rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                     </div>
                     <div className={styles.formGroup}>
                         <label>Product Images (First will be primary)</label>
-                        <input type="file" onChange={e => setFiles(Array.from(e.target.files))} accept="image/*" multiple required />
+                        <input id="product-images" name="file" type="file" onChange={e => setFiles(Array.from(e.target.files))} accept="image/*" multiple required />
                         {files.length > 0 && <p className={styles.fileCountHint}>{files.length} images selected</p>}
                     </div>
                     <div className={styles.formActions}>
@@ -310,12 +319,12 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
         try {
             const data = new FormData();
             data.append('file', file);
-            const res = await api.post(`/products/${product.id}/images`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+            const res = await api.post(`/products/${product.id}/images`, data);
             if (res.success) {
                 setImages([...images, res.data]);
                 onUpdated();
             }
-        } catch (e) { alert('Upload failed: ' + e.message); }
+        } catch (e) { const msg = e.response?.data?.message || e.response?.data || e.message; alert('Upload failed: ' + msg); console.error(e); }
         finally { setUploadingImage(false); }
     };
 
@@ -340,19 +349,19 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
                     <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
                             <label>Product Name</label>
-                            <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
+                            <input id="edit-product-name" name="name" type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
                         </div>
                         <div className={styles.formGroup}>
                             <label>Price ($)</label>
-                            <input type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} required />
+                            <input id="edit-product-price" name="price" type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} required />
                         </div>
                         <div className={styles.formGroup}>
                             <label>SKU</label>
-                            <input type="text" value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} required />
+                            <input id="edit-product-sku" name="sku" type="text" value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} required />
                         </div>
                         <div className={styles.formGroup}>
                             <label>Status</label>
-                            <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} required>
+                            <select id="edit-product-status" name="status" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} required>
                                 <option value="ACTIVE">Active</option>
                                 <option value="DRAFT">Draft</option>
                                 <option value="ARCHIVED">Archived</option>
@@ -361,7 +370,7 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
                     </div>
                     <div className={styles.formGroup}>
                         <label>Description</label>
-                        <textarea rows="4" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
+                        <textarea id="edit-product-description" name="description" rows="4" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                     </div>
 
                     <div className={styles.imageEditSection}>
@@ -375,7 +384,7 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
                                 </div>
                             ))}
                             <label className={styles.addImageCard}>
-                                <input type="file" onChange={handleUploadImage} accept="image/*" hidden disabled={uploadingImage} />
+                                <input id="edit-product-image" name="file" type="file" onChange={handleUploadImage} accept="image/*" hidden disabled={uploadingImage} />
                                 {uploadingImage ? '...' : <PlusCircle size={24} />}
                             </label>
                         </div>

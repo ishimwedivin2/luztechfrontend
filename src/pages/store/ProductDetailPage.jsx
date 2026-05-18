@@ -135,9 +135,9 @@ const ProductDetailPage = () => {
                 <ChevronRight size={14} />
                 <span onClick={() => navigate('/store')}>Store</span>
                 <ChevronRight size={14} />
-                {product.category && (
+                {product.categoryName && (
                     <>
-                        <span onClick={() => navigate(`/store?category=${product.category.name}`)}>{product.category.name}</span>
+                        <span onClick={() => navigate(`/store?category=${product.categoryName}`)}>{product.categoryName}</span>
                         <ChevronRight size={14} />
                     </>
                 )}
@@ -149,7 +149,7 @@ const ProductDetailPage = () => {
                 <div className={styles.gallery}>
                     <div className={styles.mainImage}>
                         {product.images?.[activeImage] ? (
-                            <img src={`http://localhost:8080${product.images[activeImage].url}`} alt={product.name} />
+                            <img src={`http://localhost:8080${product.images[activeImage].url ? product.images[activeImage].url : product.images[activeImage]}`} alt={product.name} />
                         ) : (
                             <div className={styles.placeholderImage}>
                                 <ShoppingCart size={64} />
@@ -163,11 +163,11 @@ const ProductDetailPage = () => {
                         <div className={styles.thumbnails}>
                             {product.images.map((img, idx) => (
                                 <div
-                                    key={img.id}
+                                    key={idx}
                                     className={`${styles.thumbnail} ${activeImage === idx ? styles.activeThumb : ''}`}
                                     onClick={() => setActiveImage(idx)}
                                 >
-                                    <img src={`http://localhost:8080${img.url}`} alt="" />
+                                    <img src={`http://localhost:8080${img.url ? img.url : img}`} alt="" />
                                 </div>
                             ))}
                         </div>
@@ -177,7 +177,7 @@ const ProductDetailPage = () => {
                 {/* Product Info */}
                 <div className={styles.info}>
                     <div className={styles.infoHead}>
-                        <p className={styles.categoryTag}>{product.category?.name?.toUpperCase() || 'GENERAL'}</p>
+                        <p className={styles.categoryTag}>{product.categoryName ? product.categoryName.toUpperCase() : 'GENERAL'}</p>
                         <h1>{product.name}</h1>
                         <p className={styles.sku}>SKU: {product.sku}</p>
                     </div>
@@ -302,7 +302,7 @@ const ProductDetailPage = () => {
                             <div className={styles.specsGrid}>
                                 <div className={styles.specItem}>
                                     <span className={styles.specLabel}>Category</span>
-                                    <span className={styles.specValue}>{product.category?.name || 'General'}</span>
+                                    <span className={styles.specValue}>{product.categoryName || 'General'}</span>
                                 </div>
                                 <div className={styles.specItem}>
                                     <span className={styles.specLabel}>SKU</span>

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Package, HelpCircle, Info, CheckCircle2, ChevronRight, X } from 'lucide-react';
 import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import styles from './NotificationCenter.module.css';
@@ -34,10 +33,8 @@ const NotificationCenter = () => {
         // Fetch initial set of notifications
         fetchNotifications();
 
-        // WebSocket setup with STOMP and SockJS
-        const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
-            webSocketFactory: () => socket,
+            webSocketFactory: () => new WebSocket('ws://localhost:8080/ws'),
             reconnectDelay: 5000,
             onConnect: () => {
                 console.log('Connected to WebSocket');

@@ -19,7 +19,7 @@ const ProductListPage = () => {
     // Filter state
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [priceRange, setPriceRange] = useState({ min: '', max: '' });
-    const [statusFilter, setStatusFilter] = useState('ACTIVE');
+    const [statusFilter, setStatusFilter] = useState('');
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -34,13 +34,13 @@ const ProductListPage = () => {
             try {
                 const response = await api.get('/products');
                 if (response.success && response.data) {
-                    // Extract unique categories from products
+                    // Extract unique categories from products (backend returns categoryId/categoryName)
                     const uniqueCategories = [];
                     const seen = new Set();
                     response.data.forEach(p => {
-                        if (p.category && !seen.has(p.category.id)) {
-                            seen.add(p.category.id);
-                            uniqueCategories.push(p.category);
+                        if (p.categoryId && !seen.has(p.categoryId)) {
+                            seen.add(p.categoryId);
+                            uniqueCategories.push({ id: p.categoryId, name: p.categoryName });
                         }
                     });
                     setCategories(uniqueCategories);
@@ -121,16 +121,16 @@ const ProductListPage = () => {
         let result = [...products];
 
         // Filter by selected categories
-        if (selectedCategories.length > 0) {
+                if (selectedCategories.length > 0) {
             result = result.filter(p =>
-                p.category && selectedCategories.includes(p.category.id)
+                p.categoryId && selectedCategories.includes(p.categoryId)
             );
         }
 
         // Filter by category URL parameter
         if (categoryParam) {
             result = result.filter(p =>
-                p.category && p.category.name.toLowerCase().includes(categoryParam.toLowerCase())
+                p.categoryName && p.categoryName.toLowerCase().includes(categoryParam.toLowerCase())
             );
         }
 
@@ -361,7 +361,7 @@ const ProductListPage = () => {
                                 >
                                     <div className={styles.productImage}>
                                         {product.images?.[0] ? (
-                                            <img src={`http://localhost:8080${product.images[0].url}`} alt={product.name} />
+                                            <img src={`http://localhost:8080${product.images[0]}`} alt={product.name} />
                                         ) : (
                                             <div className={styles.imagePlaceholder}>
                                                 <ShoppingCart size={40} />
@@ -386,7 +386,7 @@ const ProductListPage = () => {
                                     </div>
                                     <div className={styles.productInfo}>
                                         <p className={styles.categoryName}>
-                                            {product.category?.name?.toUpperCase() || 'UNCATEGORIZED'}
+                                            {(product.categoryName ? product.categoryName.toUpperCase() : 'UNCATEGORIZED')}
                                         </p>
                                         <h3>{product.name}</h3>
                                         {viewMode === 'list' && product.description && (
