@@ -215,7 +215,7 @@
 
 /* Promo Banner */
 .promoBanner {
-    background: linear-gradient(135deg, var(--primary), #059669);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     padding: 2rem;
     border-radius: var(--radius-lg);

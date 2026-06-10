@@ -32,7 +32,6 @@ const Footer = () => {
                             <li><Link to="/store">IT Store</Link></li>
                             <li><Link to="/academy">Technology Academy</Link></li>
                             <li><Link to="/careers">Careers</Link></li>
-                            <li><Link to="/support">Support Center</Link></li>
                         </ul>
                     </div>
 
@@ -73,7 +72,7 @@ const Footer = () => {
                             <iframe 
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.5028448981273!2d30.0867!3d-1.9441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca42600000001%3A0x6b74e12e437d0276!2sKigali%20Heights!5e0!3m2!1sen!2srw!4v1712241600000!5m2!1sen!2srw" 
                                 width="100%" 
-                                height="80" 
+                                height="70" 
                                 style={{ border: 0, borderRadius: '6px' }} 
                                 allowFullScreen="" 
                                 loading="lazy"

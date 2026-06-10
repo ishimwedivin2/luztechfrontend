@@ -1,9 +1,9 @@
 :root {
   /* Colors */
-  --primary: #10b981;
-  --primary-dark: #059669;
-  --primary-light: #34d399;
-  --primary-soft: rgba(16, 185, 129, 0.1);
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #818cf8;
+  --primary-soft: rgba(79, 70, 229, 0.1);
 
   --secondary: #0f172a;
   --secondary-light: #1e293b;
