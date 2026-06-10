@@ -109,8 +109,6 @@ const NotificationCenter = () => {
         }
     };
 
-    if (!user) return null;
-
     return (
         <div className={styles.notificationCenter} ref={dropdownRef}>
             <button 
@@ -127,60 +125,73 @@ const NotificationCenter = () => {
 
             {isOpen && (
                 <div className={styles.dropdown}>
-                    <div className={styles.header}>
-                        <div className={styles.headerTop}>
-                            <h3>Latest Notifications</h3>
-                            <button className={styles.closeBtn} onClick={() => setIsOpen(false)}><X size={18} /></button>
-                        </div>
-                        <div className={styles.headerBottom}>
-                            <span className={styles.countText}>{unreadCount} unread message{unreadCount !== 1 ? 's' : ''}</span>
-                            {unreadCount > 0 && (
-                                <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
-                                    Mark all as read
-                                </button>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className={styles.notificationList}>
-                        {notifications.length > 0 ? (
-                            notifications.map(item => (
-                                <div 
-                                    key={item.id} 
-                                    className={`${styles.notificationItem} ${!item.read ? styles.unread : ''}`}
-                                    onClick={() => handleNotificationClick(item)}
-                                >
-                                    <div className={`${styles.iconWrapper} ${styles[item.type?.toLowerCase() || 'default']}`}>
-                                        {getIcon(item.type)}
-                                    </div>
-                                    <div className={styles.content}>
-                                        <div className={styles.titleRow}>
-                                            <span className={styles.title}>{item.title}</span>
-                                            <span className={styles.time}>{formatTime(item.createdAt)}</span>
-                                        </div>
-                                        <div className={styles.message}>{item.message}</div>
-                                        <div className={styles.actionPrompt}>
-                                            View details <ChevronRight size={12} />
-                                        </div>
-                                    </div>
-                                    {!item.read && <div className={styles.unreadDot} />}
-                                </div>
-                            ))
-                        ) : (
-                            <div className={styles.emptyState}>
-                                <div className={styles.emptyIcon}><Bell size={48} /></div>
-                                <p>You're all caught up!</p>
-                                <span>When you receive notifications, they'll appear here.</span>
-                            </div>
-                        )}
-                    </div>
-
-                    {notifications.length > 0 && (
-                        <div className={styles.footer}>
-                            <button onClick={() => { navigate('/profile?tab=notifications'); setIsOpen(false); }}>
-                                View all notifications
+                    {!user ? (
+                        <div className={styles.loginPrompt}>
+                            <Bell size={40} className={styles.promptIcon} />
+                            <h3>Stay Updated</h3>
+                            <p>Sign in to view notifications about your orders, support tickets, and account activity.</p>
+                            <button className="btn-primary" style={{ width: '100%', padding: '0.6rem 1rem', fontSize: '0.9rem', marginTop: '0.5rem' }} onClick={() => { setIsOpen(false); navigate('/login'); }}>
+                                Sign In
                             </button>
                         </div>
+                    ) : (
+                        <>
+                            <div className={styles.header}>
+                                <div className={styles.headerTop}>
+                                    <h3>Latest Notifications</h3>
+                                    <button className={styles.closeBtn} onClick={() => setIsOpen(false)}><X size={18} /></button>
+                                </div>
+                                <div className={styles.headerBottom}>
+                                    <span className={styles.countText}>{unreadCount} unread message{unreadCount !== 1 ? 's' : ''}</span>
+                                    {unreadCount > 0 && (
+                                        <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
+                                            Mark all as read
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className={styles.notificationList}>
+                                {notifications.length > 0 ? (
+                                    notifications.map(item => (
+                                        <div 
+                                            key={item.id} 
+                                            className={`${styles.notificationItem} ${!item.read ? styles.unread : ''}`}
+                                            onClick={() => handleNotificationClick(item)}
+                                        >
+                                            <div className={`${styles.iconWrapper} ${styles[item.type?.toLowerCase() || 'default']}`}>
+                                                {getIcon(item.type)}
+                                            </div>
+                                            <div className={styles.content}>
+                                                <div className={styles.titleRow}>
+                                                    <span className={styles.title}>{item.title}</span>
+                                                    <span className={styles.time}>{formatTime(item.createdAt)}</span>
+                                                </div>
+                                                <div className={styles.message}>{item.message}</div>
+                                                <div className={styles.actionPrompt}>
+                                                    View details <ChevronRight size={12} />
+                                                </div>
+                                            </div>
+                                            {!item.read && <div className={styles.unreadDot} />}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className={styles.emptyState}>
+                                        <div className={styles.emptyIcon}><Bell size={48} /></div>
+                                        <p>You're all caught up!</p>
+                                        <span>When you receive notifications, they'll appear here.</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {notifications.length > 0 && (
+                                <div className={styles.footer}>
+                                    <button onClick={() => { navigate('/profile?tab=notifications'); setIsOpen(false); }}>
+                                        View all notifications
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             )}

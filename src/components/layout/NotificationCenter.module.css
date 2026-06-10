@@ -283,6 +283,34 @@
     color: #64748b;
 }
 
+.loginPrompt {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.promptIcon {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.loginPrompt h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.loginPrompt p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
 @media (max-width: 640px) {
     .dropdown {
         position: fixed;

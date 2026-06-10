@@ -4,6 +4,7 @@ import { Search, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Heart, Phone 
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import NotificationCenter from './NotificationCenter';
+import logoImg from '../../assets/image.jpg';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
@@ -46,8 +47,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <div className={styles.logoSection}>
                         <Link to="/" className={styles.logo}>
-                            <span className={styles.logoText}>LUZ</span>
-                            <span className={styles.logoSubtext}>TECHNOLOGY</span>
+                            <img src={logoImg} alt="Luz Technology" className={styles.logoImage} />
                         </Link>
                         <div className={styles.expertContact}>
                             <User size={18} className={styles.expertIcon} />
@@ -63,13 +63,13 @@ const Navbar = () => {
                         <div className={styles.searchWrapper}>
                             <input
                                 type="text"
-                                placeholder="Search for products, solutions..."
+                                placeholder="Search for products..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className={styles.searchInput}
                             />
                             <button type="submit" className={styles.searchButton}>
-                                Search
+                                search
                             </button>
                         </div>
                     </form>

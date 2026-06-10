@@ -44,6 +44,7 @@
     color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
+    font-weight: 400;
 }
 
 .topLink:hover {
@@ -89,6 +90,12 @@
     text-decoration: none;
 }
 
+.logoImage {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+}
+
 .logoText {
     font-size: 1.65rem;
     font-weight: 400;
@@ -123,21 +130,23 @@
 }
 
 .expertTitle {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--secondary);
 }
 
 .expertPhone {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--secondary);
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--text-muted);
 }
 
 /* Search Bar (Red/Emerald Button Style) */
 .searchContainer {
     flex: 1;
-    max-width: 360px;
-    margin: 0 1rem;
+    max-width: 240px;
+    margin-left: auto;
+    margin-right: 2rem;
 }
 
 .searchWrapper {
@@ -146,7 +155,7 @@
     border: 1px solid #d1d5db;
     border-radius: 4px;
     overflow: hidden;
-    height: 36px;
+    height: 32px;
     background-color: white;
 }
 
@@ -154,7 +163,7 @@
     flex: 1;
     border: none !important;
     padding: 0 0.75rem !important;
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
     outline: none !important;
     color: var(--text-main) !important;
     background-color: white !important;
@@ -164,14 +173,14 @@
 }
 
 .searchButton {
-    background-color: var(--primary) !important;
+    background-color: #ef4444 !important;
     color: white !important;
     border: none !important;
-    padding: 0 1rem !important;
+    padding: 0 1.25rem !important;
     font-weight: 400 !important;
     cursor: pointer;
     font-size: 0.85rem !important;
-    text-transform: uppercase !important;
+    text-transform: lowercase !important;
     height: 100% !important;
     min-width: 80px !important;
     width: auto !important;
@@ -185,7 +194,7 @@
 }
 
 .searchButton:hover {
-    background-color: var(--primary-dark) !important;
+    background-color: #dc2626 !important;
 }
 
 /* Action Icons */
@@ -348,7 +357,7 @@
    TIER 3: Navigation Bar (Dark)
    ========================================================================= */
 .navBar {
-    background-color: var(--secondary);
+    background-color: var(--secondary-light);
     color: white;
 }
 
@@ -356,7 +365,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    height: 38px;
+    height: 32px;
 }
 
 .navItem {
