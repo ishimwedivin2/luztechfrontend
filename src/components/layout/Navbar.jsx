@@ -76,6 +76,14 @@ const Navbar = () => {
 
                     {/* Action Icons */}
                     <div className={styles.actionIcons}>
+                        <Link to="/cart" className={styles.iconBtn}>
+                            <div className={styles.cartIconWrapper}>
+                                <ShoppingCart size={24} />
+                                <span className={styles.cartBadge}>{getCartCount()}</span>
+                            </div>
+                            <span>My Cart</span>
+                        </Link>
+
                         <Link to="/wishlist" className={styles.iconBtn}>
                             <Heart size={24} />
                             <span>Wishlist</span>
@@ -86,9 +94,12 @@ const Navbar = () => {
                         <div className={styles.userProfile}>
                             {user ? (
                                 <div className={styles.dropdown}>
-                                    <button className={styles.iconBtn}>
-                                        <User size={24} />
-                                        <span>Account & Orders</span>
+                                    <button className={styles.profileBtn}>
+                                        <User size={24} className={styles.profileIcon} />
+                                        <div className={styles.profileText}>
+                                            <span className={styles.profileLabel}>Hello, {user.firstName}</span>
+                                            <span className={styles.profileValue}>Account & Orders</span>
+                                        </div>
                                     </button>
                                     <div className={styles.dropdownContent}>
                                         <div className={styles.dropdownHeader}>Hello, {user.firstName}</div>
@@ -104,20 +115,15 @@ const Navbar = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <Link to="/login" className={styles.iconBtn}>
-                                    <User size={24} />
-                                    <span>Hello, Log In<br /><b>Account & Orders</b></span>
+                                <Link to="/login" className={styles.profileBtn}>
+                                    <User size={24} className={styles.profileIcon} />
+                                    <div className={styles.profileText}>
+                                        <span className={styles.profileLabel}>Hello, Log In</span>
+                                        <span className={styles.profileValue}>Account & Orders</span>
+                                    </div>
                                 </Link>
                             )}
                         </div>
-
-                        <Link to="/cart" className={styles.iconBtn}>
-                            <div className={styles.cartIconWrapper}>
-                                <ShoppingCart size={24} />
-                                <span className={styles.cartBadge}>{getCartCount()}</span>
-                            </div>
-                            <span>My Cart</span>
-                        </Link>
                     </div>
 
                     {/* Mobile Menu Toggle */}

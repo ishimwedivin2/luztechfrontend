@@ -20,18 +20,17 @@
    TIER 1: Top Bar (Dark Navy)
    ========================================================================= */
 .topBar {
-    background-color: var(--secondary);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
     font-size: 0.8rem;
-    color: #e5e7eb;
+    color: var(--text-muted);
 }
 
 .topBarContent {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 35px;
-    /* slightly taller for better mobile touch/reading */
+    height: 28px;
 }
 
 .topLeft,
@@ -42,7 +41,7 @@
 }
 
 .topLink {
-    color: #e5e7eb;
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
 }
@@ -55,8 +54,8 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    color: #e5e7eb;
-    font-weight: 600;
+    color: var(--text-muted);
+    font-weight: 400;
     text-decoration: none;
 }
 
@@ -72,14 +71,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 85px;
+    height: 62px;
 }
 
 /* Logo & Experts Section */
 .logoSection {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.25rem;
     flex-shrink: 0;
 }
 
@@ -91,8 +90,8 @@
 }
 
 .logoText {
-    font-size: 2rem;
-    font-weight: 900;
+    font-size: 1.65rem;
+    font-weight: 400;
     letter-spacing: 1px;
     color: var(--secondary);
     display: flex;
@@ -100,18 +99,18 @@
 }
 
 .logoSubtext {
-    font-size: 0.75rem;
-    letter-spacing: 3px;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
     color: var(--primary);
-    font-weight: 700;
+    font-weight: 400;
 }
 
 .expertContact {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     border-left: 1px solid #e5e7eb;
-    padding-left: 1.5rem;
+    padding-left: 1rem;
 }
 
 .expertIcon {
@@ -124,21 +123,21 @@
 }
 
 .expertTitle {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
 .expertPhone {
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 400;
     color: var(--secondary);
 }
 
 /* Search Bar (Red/Emerald Button Style) */
 .searchContainer {
     flex: 1;
-    max-width: 600px;
-    margin: 0 2rem;
+    max-width: 360px;
+    margin: 0 1rem;
 }
 
 .searchWrapper {
@@ -147,15 +146,15 @@
     border: 1px solid #d1d5db;
     border-radius: 4px;
     overflow: hidden;
-    height: 42px;
+    height: 36px;
     background-color: white;
 }
 
 .searchInput {
     flex: 1;
     border: none !important;
-    padding: 0 1rem !important;
-    font-size: 0.95rem !important;
+    padding: 0 0.75rem !important;
+    font-size: 0.9rem !important;
     outline: none !important;
     color: var(--text-main) !important;
     background-color: white !important;
@@ -168,13 +167,13 @@
     background-color: var(--primary) !important;
     color: white !important;
     border: none !important;
-    padding: 0 1.5rem !important;
-    font-weight: 600 !important;
+    padding: 0 1rem !important;
+    font-weight: 400 !important;
     cursor: pointer;
-    font-size: 0.95rem !important;
+    font-size: 0.85rem !important;
     text-transform: uppercase !important;
     height: 100% !important;
-    min-width: 100px !important;
+    min-width: 80px !important;
     width: auto !important;
     /* Prevents global button styling from making it 100% wide */
     flex-shrink: 0 !important;
@@ -193,7 +192,7 @@
 .actionIcons {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .iconBtn {
@@ -201,7 +200,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.15rem;
     color: var(--secondary);
     text-decoration: none;
     background: none;
@@ -236,7 +235,60 @@
     font-size: 0.7rem;
     padding: 2px 6px;
     border-radius: 10px;
-    font-weight: 800;
+    font-weight: 400;
+}
+
+.profileBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--secondary);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.2s;
+    padding: 0;
+}
+
+.profileBtn:hover {
+    color: var(--primary);
+}
+
+.profileIcon {
+    flex-shrink: 0;
+    color: var(--secondary);
+    transition: color 0.2s;
+}
+
+.profileBtn:hover .profileIcon {
+    color: var(--primary);
+}
+
+.profileText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    line-height: 1.25;
+}
+
+.profileLabel {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.profileValue {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--secondary);
+    transition: color 0.2s;
+}
+
+.profileBtn:hover .profileValue {
+    color: var(--primary);
 }
 
 /* Dropdown */
@@ -267,7 +319,7 @@
 
 .dropdownHeader {
     padding: 0.75rem 1rem;
-    font-weight: 700;
+    font-weight: 400;
     color: var(--secondary);
     border-bottom: 1px solid #e5e7eb;
     margin-bottom: 0.5rem;
@@ -303,18 +355,18 @@
 .navContent {
     display: flex;
     align-items: center;
-    gap: 2rem;
-    height: 50px;
+    gap: 1.5rem;
+    height: 38px;
 }
 
 .navItem {
     color: white;
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 400;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.2rem;
     height: 100%;
     transition: color 0.2s;
     background: none;
@@ -330,7 +382,7 @@
 
 .navDivider {
     width: 1px;
-    height: 20px;
+    height: 16px;
     background-color: rgba(255, 255, 255, 0.2);
     margin: 0 auto;
     /* Pushes the next items to the right */
@@ -410,7 +462,7 @@
 
 .mobileNav {
     position: absolute;
-    top: 85px;
+    top: 62px;
     left: 0;
     width: 100%;
     background-color: white;

@@ -118,8 +118,11 @@ const NotificationCenter = () => {
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="Notifications"
             >
-                <Bell size={24} />
-                {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 99 ? '99+' : unreadCount}</span>}
+                <div className={styles.bellIconWrapper}>
+                    <Bell size={24} />
+                    {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 99 ? '99+' : unreadCount}</span>}
+                </div>
+                <span>Notifications</span>
             </button>
 
             {isOpen && (
