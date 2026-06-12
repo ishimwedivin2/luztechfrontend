@@ -313,13 +313,6 @@ const ProductListPage = () => {
                             </ul>
                         </div>
                     </div>
-
-                    {/* Promo Banner */}
-                    <div className={styles.promoBanner}>
-                        <h4>Luz Academy</h4>
-                        <p>Get certified in Cisco networking & cloud infrastructure.</p>
-                        <button onClick={() => navigate('/academy')}>Learn More</button>
-                    </div>
                 </aside>
 
                 {/* Product Grid */}

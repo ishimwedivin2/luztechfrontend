@@ -7,6 +7,9 @@
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
 }
 
 .container {
@@ -20,10 +23,10 @@
    TIER 1: Top Bar (Dark Navy)
    ========================================================================= */
 .topBar {
-    background-color: white;
-    border-bottom: 1px solid #e5e7eb;
+    background-color: var(--secondary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .topBarContent {
@@ -41,30 +44,35 @@
 }
 
 .topLink {
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     transition: color 0.2s;
     font-weight: 400;
 }
 
 .topLink:hover {
-    color: var(--primary);
+    color: white;
 }
 
 .phoneLink {
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.7);
     font-weight: 400;
     text-decoration: none;
+    transition: color 0.2s;
+}
+
+.phoneLink:hover {
+    color: white;
 }
 
 /* =========================================================================
    TIER 2: Main Header (White)
    ========================================================================= */
 .mainHeader {
-    background-color: white;
+    background-color: var(--bg-subtle);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 

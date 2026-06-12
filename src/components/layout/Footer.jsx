@@ -15,7 +15,7 @@ const Footer = () => {
                             <span className={styles.logoSubtext}>TECHNOLOGY</span>
                         </div>
                         <p className={styles.brandDesc}>
-                            Rwanda's leading provider of enterprise IT solutions, networking infrastructure, and professional training through our world-class Academy.
+                            Rwanda's leading provider of enterprise IT solutions and networking infrastructure.
                         </p>
                         <div className={styles.socials}>
                             <a href="#"><Facebook size={20} /></a>
@@ -30,8 +30,7 @@ const Footer = () => {
                         <h4>Solutions</h4>
                         <ul>
                             <li><Link to="/store">IT Store</Link></li>
-                            <li><Link to="/academy">Technology Academy</Link></li>
-                            <li><Link to="/careers">Careers</Link></li>
+                            <li><Link to="/support">Support</Link></li>
                         </ul>
                     </div>
 

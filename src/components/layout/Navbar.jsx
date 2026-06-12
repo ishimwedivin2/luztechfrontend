@@ -133,7 +133,7 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* TIER 3: Navigation Bar */}
+            {/* TIER 3: Navigation Bar
             <nav className={styles.navBar}>
                 <div className={`${styles.container} ${styles.navContent}`}>
                     <Link to="/" className={styles.navItem}>Home</Link>
@@ -160,11 +160,10 @@ const Navbar = () => {
 
                     <div className={styles.navDivider}></div>
 
-                    <Link to="/academy" className={styles.navItem}>Academy</Link>
-                    <Link to="/careers" className={styles.navItem}>Careers</Link>
                     <Link to="/support" className={styles.navItem}>Support</Link>
                 </div>
             </nav>
+            */}
 
             {/* Mobile Nav Overlay */}
             {isMenuOpen && (
@@ -181,8 +180,7 @@ const Navbar = () => {
                     <div className={styles.mobileLinks}>
                         <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
                         <Link to="/store" onClick={() => setIsMenuOpen(false)}>All Products</Link>
-                        <Link to="/academy" onClick={() => setIsMenuOpen(false)}>Academy</Link>
-                        <Link to="/careers" onClick={() => setIsMenuOpen(false)}>Careers</Link>
+                        <Link to="/support" onClick={() => setIsMenuOpen(false)}>Support</Link>
                         {user ? (
                             <>
                                 <Link to="/orders" onClick={() => setIsMenuOpen(false)}>My Orders</Link>

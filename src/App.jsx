@@ -13,8 +13,6 @@ import CartPage from './pages/cart/CartPage';
 import CheckoutPage from './pages/checkout/CheckoutPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import OrdersPage from './pages/orders/OrdersPage';
-import AcademyPage from './pages/academy/AcademyPage';
-import CareersPage from './pages/careers/CareersPage';
 import SupportPage from './pages/support/SupportPage';
 import WishlistPage from './pages/wishlist/WishlistPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -40,8 +38,6 @@ function AppLayout() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/academy" element={<AcademyPage />} />
-          <Route path="/careers" element={<CareersPage />} />
           <Route path="/support/*" element={<SupportPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/admin/*" element={<AdminDashboard />} />

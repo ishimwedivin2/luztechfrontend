@@ -1,7 +1,7 @@
 .footer {
     background: linear-gradient(180deg, var(--secondary-light) 0%, var(--secondary) 100%);
     color: var(--text-on-dark);
-    padding: 3.5rem 0 0;
+    padding: 2rem 0 0;
     margin-top: auto;
     position: relative;
 }
@@ -19,15 +19,15 @@
 .grid {
     display: grid;
     grid-template-columns: 1.8fr 0.8fr 0.8fr 1.2fr 1.6fr;
-    gap: 2.5rem;
-    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .logo {
     display: flex;
     flex-direction: column;
     line-height: 1;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .logoText {
@@ -49,7 +49,7 @@
     font-size: var(--text-sm);
     line-height: 1.65;
     color: var(--text-light);
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     max-width: 320px;
 }
 
@@ -80,7 +80,7 @@
 
 .footer h4 {
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     font-size: var(--text-sm);
     font-weight: 700;
     text-transform: uppercase;
@@ -90,7 +90,7 @@
 .footer ul {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0.5rem;
 }
 
 .footer ul a,
@@ -162,7 +162,7 @@
 
 @media (max-width: 768px) {
     .footer {
-        padding-top: 2.5rem;
+        padding-top: 1.5rem;
     }
 
     .grid {
