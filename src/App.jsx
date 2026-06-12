@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/layout/Navbar';
@@ -20,33 +20,44 @@ import WishlistPage from './pages/wishlist/WishlistPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import './styles/global.css';
 
+const AUTH_ROUTES = ['/login', '/register'];
+
+function AppLayout() {
+  const { pathname } = useLocation();
+  const isAuthPage = AUTH_ROUTES.includes(pathname);
+
+  return (
+    <div className="app">
+      {!isAuthPage && <Navbar />}
+      <main className={`main-content${isAuthPage ? ' main-content--auth' : ''}`}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/store" element={<ProductListPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/academy" element={<AcademyPage />} />
+          <Route path="/careers" element={<CareersPage />} />
+          <Route path="/support/*" element={<SupportPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+        </Routes>
+      </main>
+      {!isAuthPage && <Footer />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="app">
-            <Navbar />
-            <main className="main-content" style={{ minHeight: 'calc(100vh - 450px)' }}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/store" element={<ProductListPage />} />
-                <Route path="/product/:id" element={<ProductDetailPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/academy" element={<AcademyPage />} />
-                <Route path="/careers" element={<CareersPage />} />
-                <Route path="/support/*" element={<SupportPage />} />
-                <Route path="/wishlist" element={<WishlistPage />} />
-                <Route path="/admin/*" element={<AdminDashboard />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
+          <AppLayout />
         </Router>
       </CartProvider>
     </AuthProvider>

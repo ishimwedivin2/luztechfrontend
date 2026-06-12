@@ -286,6 +286,8 @@ const AddProductModal = ({ onClose, onAdded }) => {
 };
 
 /* ===== EDIT PRODUCT MODAL ===== */
+const getImageUrl = (img) => (typeof img === 'string' ? img : img?.url);
+
 const EditProductModal = ({ product, onClose, onUpdated }) => {
     const [formData, setFormData] = useState({
         name: product.name || '',
@@ -297,6 +299,23 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
     const [images, setImages] = useState(product.images || []);
     const [uploadingImage, setUploadingImage] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [loadingImages, setLoadingImages] = useState(true);
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const res = await api.get(`/products/${product.id}`);
+                if (res.success && res.data?.images) {
+                    setImages(res.data.images);
+                }
+            } catch (e) {
+                console.error('Failed to load product images', e);
+            } finally {
+                setLoadingImages(false);
+            }
+        };
+        fetchProduct();
+    }, [product.id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -331,13 +350,14 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
     const handleDeleteImage = async (imageId) => {
         if (!window.confirm('Remove this image?')) return;
         try {
-            // Backend delete image endpoint assumed or logic to remove
-            await api.patch(`/products/${product.id}/remove-image/${imageId}`);
-            setImages(images.filter(img => img.id !== imageId));
-            onUpdated();
-        } catch (e) { 
+            const res = await api.patch(`/products/${product.id}/remove-image/${imageId}`);
+            if (res.success) {
+                setImages(res.data?.images || images.filter(img => img.id !== imageId));
+                onUpdated();
+            }
+        } catch (e) {
             console.error(e);
-            alert('Failed to delete image. Please check if this feature is fully implemented on the backend.'); 
+            alert('Failed to delete image.');
         }
     };
 
@@ -375,11 +395,15 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
 
                     <div className={styles.imageEditSection}>
                         <label>Manage Images</label>
+                        {loadingImages ? (
+                            <p>Loading images...</p>
+                        ) : (
                         <div className={styles.imageGrid}>
+                            {images.length === 0 && <p className={styles.fileCountHint}>No images yet. Use + to add one.</p>}
                             {images.map(img => (
-                                <div key={img.id} className={styles.imageWrapper}>
-                                    <img src={`http://localhost:8080${img.url}`} alt="" />
-                                    <button type="button" className={styles.deleteBtnSmall} onClick={() => handleDeleteImage(img.id)}><Trash2 size={12} /></button>
+                                <div key={img.id || getImageUrl(img)} className={styles.imageWrapper}>
+                                    <img src={`http://localhost:8080${getImageUrl(img)}`} alt="" />
+                                    <button type="button" className={styles.deleteBtnSmall} onClick={() => handleDeleteImage(img.id)} title="Remove image"><Trash2 size={12} /></button>
                                     {img.isPrimary && <span className={styles.primaryTag}>Primary</span>}
                                 </div>
                             ))}
@@ -388,6 +412,7 @@ const EditProductModal = ({ product, onClose, onUpdated }) => {
                                 {uploadingImage ? '...' : <PlusCircle size={24} />}
                             </label>
                         </div>
+                        )}
                     </div>
 
                     <div className={styles.formActions}>

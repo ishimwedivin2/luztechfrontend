@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, UserPlus, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import AuthBackLink from './AuthBackLink';
 import styles from './Auth.module.css';
 
 const RegisterPage = () => {
@@ -51,6 +52,7 @@ const RegisterPage = () => {
 
     return (
         <div className={styles.authContainer}>
+            <AuthBackLink />
             <div className={styles.authCard}>
                 <div className={styles.authHeader}>
                     <h2>Join Luz Technology</h2>

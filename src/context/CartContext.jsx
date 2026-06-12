@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 const CartContext = createContext();
 
@@ -34,7 +35,7 @@ export const CartProvider = ({ children }) => {
                 id: product.id,
                 name: product.name,
                 price: product.price,
-                image: product.images?.[0]?.url || null,
+                image: resolveImageUrl(product.images?.[0]),
                 sku: product.sku,
                 category: product.category?.name || 'General',
                 quantity

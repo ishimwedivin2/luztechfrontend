@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Trash2, ArrowRight, Package } from 'lucide-react';
 import api from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Wishlist.module.css';
 
@@ -76,7 +77,7 @@ const WishlistPage = () => {
                             
                             <div className={styles.imageWrapper} onClick={() => navigate(`/product/${item.product.id}`)}>
                                 {item.product.images?.[0] ? (
-                                    <img src={`http://localhost:8080${item.product.images[0].url ? item.product.images[0].url : item.product.images[0]}`} alt={item.product.name} />
+                                    <img src={resolveImageUrl(item.product.images[0])} alt={item.product.name} />
                                 ) : (
                                     <Package size={48} opacity={0.2} />
                                 )}

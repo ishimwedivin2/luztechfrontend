@@ -4,6 +4,7 @@ import { ShoppingCart, Heart, Shield, Truck, RefreshCw, ChevronLeft, ChevronRigh
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import api from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import styles from './ProductDetail.module.css';
 
 const ProductDetailPage = () => {
@@ -149,7 +150,7 @@ const ProductDetailPage = () => {
                 <div className={styles.gallery}>
                     <div className={styles.mainImage}>
                         {product.images?.[activeImage] ? (
-                            <img src={`http://localhost:8080${product.images[activeImage].url ? product.images[activeImage].url : product.images[activeImage]}`} alt={product.name} />
+                            <img src={resolveImageUrl(product.images[activeImage])} alt={product.name} />
                         ) : (
                             <div className={styles.placeholderImage}>
                                 <ShoppingCart size={64} />
@@ -167,7 +168,7 @@ const ProductDetailPage = () => {
                                     className={`${styles.thumbnail} ${activeImage === idx ? styles.activeThumb : ''}`}
                                     onClick={() => setActiveImage(idx)}
                                 >
-                                    <img src={`http://localhost:8080${img.url ? img.url : img}`} alt="" />
+                                    <img src={resolveImageUrl(img)} alt="" />
                                 </div>
                             ))}
                         </div>

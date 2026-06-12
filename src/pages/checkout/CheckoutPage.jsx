@@ -4,6 +4,7 @@ import { CreditCard, Truck, CheckCircle, ChevronRight, Shield, Lock, ArrowLeft }
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import styles from './Checkout.module.css';
 
 const CheckoutPage = () => {
@@ -266,7 +267,7 @@ const CheckoutPage = () => {
                             {cartItems.map(item => (
                                 <div key={item.id} className={styles.summaryItem}>
                                     <div className={styles.summaryItemImage}>
-                                        {item.image ? <img src={`http://localhost:8080${item.image}`} alt="" /> : <div className={styles.miniPlaceholder}></div>}
+                                        {item.image ? <img src={resolveImageUrl(item.image)} alt="" /> : <div className={styles.miniPlaceholder}></div>}
                                         <span className={styles.itemQty}>{item.quantity}</span>
                                     </div>
                                     <div className={styles.summaryItemInfo}>

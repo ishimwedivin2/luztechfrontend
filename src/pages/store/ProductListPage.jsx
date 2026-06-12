@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Filter, Search, ChevronRight, SlidersHorizontal, Grid, List, Star, ShoppingCart, Eye, Heart } from 'lucide-react';
+import { Filter, Search, ChevronRight, SlidersHorizontal, Grid, List, Star, ShoppingCart, Heart } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import api from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import styles from './Store.module.css';
 
 const ProductListPage = () => {
@@ -14,7 +16,9 @@ const ProductListPage = () => {
     const [sortBy, setSortBy] = useState('featured');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [wishlistIds, setWishlistIds] = useState([]);
+    const [addedId, setAddedId] = useState(null);
     const { user } = useAuth();
+    const { addToCart } = useCart();
 
     // Filter state
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -96,6 +100,13 @@ const ProductListPage = () => {
         };
         fetchWishlist();
     }, [user]);
+
+    const handleAddToCart = (e, product) => {
+        e.stopPropagation();
+        addToCart(product);
+        setAddedId(product.id);
+        setTimeout(() => setAddedId(null), 1500);
+    };
 
     const toggleWishlist = async (e, productId) => {
         e.stopPropagation();
@@ -361,7 +372,7 @@ const ProductListPage = () => {
                                 >
                                     <div className={styles.productImage}>
                                         {product.images?.[0] ? (
-                                            <img src={`http://localhost:8080${product.images[0]}`} alt={product.name} />
+                                            <img src={resolveImageUrl(product.images[0])} alt={product.name} />
                                         ) : (
                                             <div className={styles.imagePlaceholder}>
                                                 <ShoppingCart size={40} />
@@ -378,11 +389,6 @@ const ProductListPage = () => {
                                                 -{product.discount.percentage}%
                                             </span>
                                         )}
-                                        <div className={styles.productOverlay}>
-                                            <button className={styles.quickViewBtn} onClick={(e) => { e.stopPropagation(); navigate(`/product/${product.id}`); }}>
-                                                <Eye size={18} /> Quick View
-                                            </button>
-                                        </div>
                                     </div>
                                     <div className={styles.productInfo}>
                                         <p className={styles.categoryName}>
@@ -392,25 +398,34 @@ const ProductListPage = () => {
                                         {viewMode === 'list' && product.description && (
                                             <p className={styles.productDescription}>{product.description}</p>
                                         )}
-                                        <div className={styles.rating}>
-                                            <div className={styles.stars}>
-                                                {renderStars(product.averageRating)}
+                                        {viewMode === 'list' && (
+                                            <div className={styles.rating}>
+                                                <div className={styles.stars}>
+                                                    {renderStars(product.averageRating)}
+                                                </div>
+                                                <span className={styles.reviewCount}>
+                                                    ({product.reviews?.length || 0} reviews)
+                                                </span>
                                             </div>
-                                            <span className={styles.reviewCount}>
-                                                ({product.reviews?.length || 0} reviews)
-                                            </span>
+                                        )}
+                                        <div className={styles.cardFooter}>
+                                            <div className={styles.priceRow}>
+                                                <p className={styles.price}>${product.price?.toFixed(2)}</p>
+                                                {product.discount && (
+                                                    <p className={styles.oldPrice}>
+                                                        ${(product.price / (1 - product.discount.percentage / 100)).toFixed(2)}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <button
+                                                className={`${styles.addToCartBtn} ${addedId === product.id ? styles.addToCartBtnAdded : ''}`}
+                                                onClick={(e) => handleAddToCart(e, product)}
+                                                disabled={product.status !== 'ACTIVE'}
+                                            >
+                                                <ShoppingCart size={14} />
+                                                {addedId === product.id ? 'Added' : 'Add to Cart'}
+                                            </button>
                                         </div>
-                                        <div className={styles.priceRow}>
-                                            <p className={styles.price}>${product.price?.toFixed(2)}</p>
-                                            {product.discount && (
-                                                <p className={styles.oldPrice}>
-                                                    ${(product.price / (1 - product.discount.percentage / 100)).toFixed(2)}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <p className={styles.stockStatus}>
-                                            {product.status === 'ACTIVE' ? '✓ In Stock' : 'Out of Stock'}
-                                        </p>
                                     </div>
                                 </div>
                             ))}

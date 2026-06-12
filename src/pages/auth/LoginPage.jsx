@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import AuthBackLink from './AuthBackLink';
 import styles from './Auth.module.css';
 
 const LoginPage = () => {
@@ -29,6 +30,7 @@ const LoginPage = () => {
 
     return (
         <div className={styles.authContainer}>
+            <AuthBackLink />
             <div className={styles.authCard}>
                 <div className={styles.authHeader}>
                     <h2>Welcome Back</h2>

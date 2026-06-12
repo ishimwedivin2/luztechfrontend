@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Minus, Plus, ShoppingCart, ChevronRight, ArrowRight, Shield, Truck } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import styles from './Cart.module.css';
 
 const CartPage = () => {
@@ -55,7 +56,7 @@ const CartPage = () => {
                             <div className={styles.itemProduct}>
                                 <div className={styles.itemImage} onClick={() => navigate(`/product/${item.id}`)}>
                                     {item.image ? (
-                                        <img src={`http://localhost:8080${item.image}`} alt={item.name} />
+                                        <img src={resolveImageUrl(item.image)} alt={item.name} />
                                     ) : (
                                         <div className={styles.imagePlaceholder}><ShoppingCart size={24} /></div>
                                     )}

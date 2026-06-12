@@ -6,6 +6,7 @@ import {
     Users, CheckCircle, Truck, X, Send 
 } from 'lucide-react';
 import api from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 import styles from './HomePage.module.css';
 
 import img1 from '../assets/1stsection/1.png';
@@ -193,7 +194,7 @@ const HomePage = () => {
             category: p.category || 'networking',
             price: p.price,
             description: p.description || 'Enterprise grade IT hardware solution.',
-            image: p.images?.[0] ? (p.images[0].url ? `http://localhost:8080${p.images[0].url}` : `http://localhost:8080${p.images[0]}`) : null,
+            image: resolveImageUrl(p.images?.[0]),
             specs: ['Genuine Vendor Stock', 'Luztech Inspected']
         }));
 
@@ -249,15 +250,27 @@ const HomePage = () => {
                         {activeSlide.subtitle}
                     </p>
                     <div className={styles.heroActions}>
-                        <button onClick={() => navigate(activeSlide.link)} className="btn-primary" style={{ padding: '0.75rem 2.2rem', fontSize: '1.05rem' }}>
+                        <button onClick={() => navigate(activeSlide.link)} className={`btn-primary ${styles.heroCta}`}>
                             {activeSlide.buttonText} <ArrowRight size={20} />
                         </button>
+                    </div>
+                    <div className={styles.slideIndicators} role="tablist" aria-label="Hero slideshow">
+                        {heroImages.map((_, index) => (
+                            <button
+                                key={index}
+                                role="tab"
+                                aria-selected={index === currentImageIndex}
+                                aria-label={`Slide ${index + 1}`}
+                                className={`${styles.slideDot} ${index === currentImageIndex ? styles.slideDotActive : ''}`}
+                                onClick={() => setCurrentImageIndex(index)}
+                            />
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* Categories / Services Grid */}
-            <section className="container" style={{ marginBottom: '5rem' }}>
+            <section className={`container ${styles.servicesSection}`}>
                 <div className={styles.servicesGrid}>
                     <div className={styles.serviceCard}>
                         <div className={styles.iconBox}><Globe size={32} /></div>
