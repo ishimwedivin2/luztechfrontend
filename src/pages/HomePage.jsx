@@ -84,77 +84,24 @@ const AnimatedHeroStat = ({ value, suffix = '', label, display }) => {
     );
 };
 
-const fallbackProducts = [
-    {
-        id: 'f-1',
-        name: 'Cisco Catalyst 9300 48-Port Switch',
-        category: 'networking',
-        price: 3299.99,
-        description: 'Enterprise stackable layer 3 switch with 48x 1G ports and modular uplinks.',
-        image: 'https://images.unsplash.com/photo-1597733336794-12d05021d510?auto=format&fit=crop&w=600&q=80',
-        specs: ['48 Ethernet Ports', 'Stackwise-480', 'UADP 2.0 ASIC']
-    },
-    {
-        id: 'f-2',
-        name: 'Dell PowerEdge R760 Rack Server',
-        category: 'servers',
-        price: 5499.00,
-        description: 'High performance 2U server powered by Dual 4th Gen Intel Xeon processors.',
-        image: 'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&w=600&q=80',
-        specs: ['Dual Intel Xeon', 'Up to 8TB DDR5', 'PERC12 RAID Controller']
-    },
-    {
-        id: 'f-3',
-        name: 'Fortinet FortiGate 100F NGFW',
-        category: 'security',
-        price: 2899.50,
-        description: 'Next-generation firewall for mid-sized enterprise networks with advanced threat inspection.',
-        image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80',
-        specs: ['1 Gbps Threat Protection', 'Built-in SPU NP6/CP9', 'Dual Power Supplies']
-    },
-    {
-        id: 'f-5',
-        name: 'Juniper EX4100 24-Port Switch',
-        category: 'networking',
-        price: 2150.00,
-        description: 'Cloud-ready access switch with AI-powered Mist wired assurance for modern campus systems.',
-        image: 'https://images.unsplash.com/photo-1597733336794-12d05021d510?auto=format&fit=crop&w=600&q=80',
-        specs: ['24 PoE+ Ports', 'Virtual Chassis Support', 'Mist AI Integrated']
-    },
-    {
-        id: 'f-6',
-        name: 'HPE ProLiant DL380 Gen11 Server',
-        category: 'servers',
-        price: 4850.00,
-        description: 'Adaptable 2U rack server delivering supreme scalability for multi-VM corporate workloads.',
-        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',
-        specs: ['Single AMD EPYC', 'Up to 3TB RAM', 'HPE iLO 6 Management']
-    },
-    {
-        id: 'f-7',
-        name: 'Palo Alto PA-440 Firewalls',
-        category: 'security',
-        price: 1999.00,
-        description: 'ML-powered desktop Next-Gen Firewall delivering advanced security for distributed branches.',
-        image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80',
-        specs: ['App-ID & Content-ID', 'WildFire Threat Analysis', 'Fanless Silent Operation']
-    }
-];
-
 const HomePage = () => {
     const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                setLoading(true);
                 const response = await api.get('/products');
                 if (response.success) {
-                    setFeaturedProducts(response.data);
+                    setFeaturedProducts(response.data || []);
                 }
             } catch (error) {
                 console.error('Error fetching products', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchProducts();
@@ -168,24 +115,15 @@ const HomePage = () => {
     }, []);
 
     const getFeaturedItems = () => {
-        const apiProductsMapped = featuredProducts.map(p => ({
+        return featuredProducts.slice(0, 8).map(p => ({
             id: p.id,
             name: p.name,
-            category: p.category || 'networking',
+            category: p.categoryName || p.category || 'networking',
             price: p.price,
             description: p.description || 'Enterprise grade IT hardware solution.',
             image: resolveImageUrl(p.images?.[0]),
-            specs: ['Genuine Vendor Stock', 'Luztech Inspected']
+            specs: p.specs || ['Genuine Vendor Stock', 'Luztech Inspected']
         }));
-
-        const combined = [...apiProductsMapped];
-        fallbackProducts.forEach(fbItem => {
-            if (!combined.some(item => item.name.toLowerCase() === fbItem.name.toLowerCase())) {
-                combined.push(fbItem);
-            }
-        });
-
-        return combined.slice(0, 8);
     };
 
     const featuredItems = getFeaturedItems();
@@ -242,26 +180,46 @@ const HomePage = () => {
 
             {/* Categories / Services Grid */}
             <section className={`container ${styles.servicesSection}`}>
+                <div className={styles.servicesHeader}>
+                    <span className={styles.servicesTag}>OUR DEPARTMENTS</span>
+                    <h2 className={styles.servicesTitle}>Explore Enterprise Solutions</h2>
+                </div>
                 <div className={styles.servicesGrid}>
                     <div className={styles.serviceCard} onClick={() => navigate('/store?category=networking')}>
                         <div className={styles.iconBox}><Globe size={32} /></div>
                         <h3>Networking</h3>
                         <p>Enterprise networking switches, routers, and connectivity solutions.</p>
+                        <div className={styles.cardAction}>
+                            <span>Shop Department</span>
+                            <ArrowRight size={16} />
+                        </div>
                     </div>
                     <div className={styles.serviceCard} onClick={() => navigate('/store?category=servers')}>
                         <div className={styles.iconBox}><Server size={32} /></div>
                         <h3>Servers & Storage</h3>
                         <p>Scalable rack servers, network storage, and accessories.</p>
+                        <div className={styles.cardAction}>
+                            <span>Shop Department</span>
+                            <ArrowRight size={16} />
+                        </div>
                     </div>
                     <div className={styles.serviceCard} onClick={() => navigate('/store?category=computers')}>
                         <div className={styles.iconBox}><Cpu size={32} /></div>
                         <h3>Computers & Hardware</h3>
                         <p>High-performance desktops, laptops, and computer components.</p>
+                        <div className={styles.cardAction}>
+                            <span>Shop Department</span>
+                            <ArrowRight size={16} />
+                        </div>
                     </div>
                     <div className={styles.serviceCard} onClick={() => navigate('/store?category=software')}>
                         <div className={styles.iconBox}><HardDrive size={32} /></div>
                         <h3>Software & Licenses</h3>
                         <p>Operating systems, developer suites, and office tools.</p>
+                        <div className={styles.cardAction}>
+                            <span>Shop Department</span>
+                            <ArrowRight size={16} />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -276,34 +234,44 @@ const HomePage = () => {
                 </div>
 
                 <div className={styles.productGrid}>
-                    {featuredItems.map(item => (
-                        <div key={item.id} className={styles.productCard} onClick={() => navigate(`/product/${item.id}`)}>
-                            <div className={styles.productImage}>
-                                {item.image ? (
-                                    <img src={item.image} alt={item.name} />
-                                ) : (
-                                    <div className={styles.imagePlaceholder}>
-                                        <HardDrive size={40} className={styles.placeholderIcon} />
-                                        <span>No Image</span>
-                                    </div>
-                                )}
-                                <span className={styles.categoryBadge}>{item.category}</span>
-                            </div>
-                            <div className={styles.productInfo}>
-                                <h3>{item.name}</h3>
-                                <p className={styles.productDesc}>{item.description}</p>
-                                <div className={styles.productSpecs}>
-                                    {item.specs?.map((spec, index) => (
-                                        <span key={index} className={styles.specTag}>{spec}</span>
-                                    ))}
-                                </div>
-                                <div className={styles.cardFooter}>
-                                    <p className={styles.price}>${item.price.toFixed(2)}</p>
-                                    <button className={styles.detailsBtn}>View Details</button>
-                                </div>
-                            </div>
+                    {loading ? (
+                        <div className={styles.loadingPlaceholder}>
+                            <p>Loading featured products...</p>
                         </div>
-                    ))}
+                    ) : featuredItems.length > 0 ? (
+                        featuredItems.map(item => (
+                            <div key={item.id} className={styles.productCard} onClick={() => navigate(`/product/${item.id}`)}>
+                                <div className={styles.productImage}>
+                                    {item.image ? (
+                                        <img src={item.image} alt={item.name} />
+                                    ) : (
+                                        <div className={styles.imagePlaceholder}>
+                                            <HardDrive size={40} className={styles.placeholderIcon} />
+                                            <span>No Image</span>
+                                        </div>
+                                    )}
+                                    <span className={styles.categoryBadge}>{item.category}</span>
+                                </div>
+                                <div className={styles.productInfo}>
+                                    <h3>{item.name}</h3>
+                                    <p className={styles.productDesc}>{item.description}</p>
+                                    <div className={styles.productSpecs}>
+                                        {item.specs?.map((spec, index) => (
+                                            <span key={index} className={styles.specTag}>{spec}</span>
+                                        ))}
+                                    </div>
+                                    <div className={styles.cardFooter}>
+                                        <p className={styles.price}>${item.price.toFixed(2)}</p>
+                                        <button className={styles.detailsBtn}>View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className={styles.emptyPlaceholder}>
+                            <p>No featured products available at the moment.</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.viewMoreContainer}>

@@ -7,8 +7,6 @@
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
     box-shadow: var(--shadow-md);
 }
 
@@ -72,8 +70,10 @@
    TIER 2: Main Header (White)
    ========================================================================= */
 .mainHeader {
-    background-color: var(--bg-subtle);
+    background-color: #f3f4f6;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
 }
 
 .mainHeaderContent {
@@ -124,7 +124,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-left: 1px solid #e5e7eb;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
     padding-left: 1rem;
 }
 
